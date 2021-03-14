@@ -1,3 +1,5 @@
 ﻿  main.cpp
+D:\Google Drive\Algorithmen\uebung_1\uebung_1\hashtable.h(40,20): warning C4018: "<": Konflikt zwischen "signed" und "unsigned"
+D:\Google Drive\Algorithmen\uebung_1\uebung_1\hashtable.h(44,22): warning C4018: "<": Konflikt zwischen "signed" und "unsigned"
 D:\Google Drive\Algorithmen\uebung_1\uebung_1\main.cpp(22,20): warning C4018: "<": Konflikt zwischen "signed" und "unsigned"
   uebung_1.vcxproj -> D:\Google Drive\Algorithmen\uebung_1\Debug\uebung_1.exe

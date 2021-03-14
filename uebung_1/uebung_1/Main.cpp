@@ -74,6 +74,8 @@ int main()
 	welcome_message();
 	bool running = true;
 	Hashtable new_hashtable;
+	std::cout<<new_hashtable.hash_function("ABC")<< std::endl;
+	std::cout << new_hashtable.hash_function("AB") << std::endl;
 	while (running)
 	{
 		menu_options();
