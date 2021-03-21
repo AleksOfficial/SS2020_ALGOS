@@ -1,6 +1,8 @@
 #include <iostream>
 #include "hashtable.h"
 
+//Perhaps these Functions can be moved into the Hashtable Class
+
 void welcome_message()
 {
 	std::cout << "Welcome to your personal Stock program!" << std::endl;
@@ -17,19 +19,14 @@ void menu_options()
 	std::cout << "   - LOAD <filename>: Load your stock selection and data from a specified file. " << std::endl;
 	std::cout << "   - QUIT: Exit the program. " << std::endl;
 }
-void to_upper(std::string &command)
-{
-	for (int i = 0; i < command.length(); i++)
-		command[i] > 90 ? command[i] = command[i] - 32: command[i];
-	
-}
+
 
 void input_handler(Hashtable &current_table,bool &running)
 {
 	std::cout << "Enter a command: " << std::endl;
 	std::string command;
 	std::cin >> command;
-	to_upper(command);
+	current_table.to_upper(command);
 	if (command == "ADD")
 	{
 		current_table.add();
@@ -63,6 +60,16 @@ void input_handler(Hashtable &current_table,bool &running)
 		current_table.quit();
 		running = false;
 	}
+	else if (command == "PRINTTABLE")
+	{
+		current_table.print_table();
+
+	}
+	else if (command == "PRINTNAMES")
+	{
+		current_table.print_names();
+
+	}
 	else
 	{
 		std::cout << "Invalid Command. Please try again: " << std::endl;
@@ -74,8 +81,8 @@ int main()
 	welcome_message();
 	bool running = true;
 	Hashtable new_hashtable;
-	std::cout<<new_hashtable.hash_function("ABC")<< std::endl;
-	std::cout << new_hashtable.hash_function("AB") << std::endl;
+	//std::cout<<new_hashtable.hash_function("ABC")<< std::endl;
+//	std::cout << new_hashtable.hash_function("AB") << std::endl;
 	while (running)
 	{
 		menu_options();

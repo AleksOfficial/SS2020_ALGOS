@@ -1,5 +1,21 @@
 ﻿  main.cpp
-D:\Google Drive\Algorithmen\uebung_1\uebung_1\hashtable.h(40,20): warning C4018: "<": Konflikt zwischen "signed" und "unsigned"
-D:\Google Drive\Algorithmen\uebung_1\uebung_1\hashtable.h(44,22): warning C4018: "<": Konflikt zwischen "signed" und "unsigned"
-D:\Google Drive\Algorithmen\uebung_1\uebung_1\main.cpp(22,20): warning C4018: "<": Konflikt zwischen "signed" und "unsigned"
+D:\Google Drive\Algorithmen\uebung_1\uebung_1\stock.h(44,23): warning C4477: "fscanf_s": Die Formatzeichenfolge "%s" erfordert ein Argument vom Typ "char *", das variadic-Argument "1" weist aber den Typ "std::string *" auf.
+D:\Google Drive\Algorithmen\uebung_1\uebung_1\stock.h(44,23): message : Dieses Argument wird von einem Konvertierungsspezifizierer verwendet.
+D:\Google Drive\Algorithmen\uebung_1\uebung_1\stock.h(44,23): warning C4477: "fscanf_s": Die Formatzeichenfolge "%s" erfordert ein Argument vom Typ "unsigned int", das variadic-Argument "2" weist aber den Typ "float *" auf.
+D:\Google Drive\Algorithmen\uebung_1\uebung_1\stock.h(44,23): message : Dieses Argument wird als Puffergröße verwendet.
+D:\Google Drive\Algorithmen\uebung_1\uebung_1\stock.h(44,23): warning C4477: "fscanf_s": Die Formatzeichenfolge "%lf" erfordert ein Argument vom Typ "double *", das variadic-Argument "3" weist aber den Typ "float *" auf.
+D:\Google Drive\Algorithmen\uebung_1\uebung_1\stock.h(44,23): message : Verwenden Sie ggf. "%f" in der Formatzeichenfolge.
+D:\Google Drive\Algorithmen\uebung_1\uebung_1\stock.h(44,23): warning C4477: "fscanf_s": Die Formatzeichenfolge "%lf" erfordert ein Argument vom Typ "double *", das variadic-Argument "4" weist aber den Typ "float *" auf.
+D:\Google Drive\Algorithmen\uebung_1\uebung_1\stock.h(44,23): message : Verwenden Sie ggf. "%f" in der Formatzeichenfolge.
+D:\Google Drive\Algorithmen\uebung_1\uebung_1\stock.h(44,23): warning C4477: "fscanf_s": Die Formatzeichenfolge "%lf" erfordert ein Argument vom Typ "double *", das variadic-Argument "5" weist aber den Typ "float *" auf.
+D:\Google Drive\Algorithmen\uebung_1\uebung_1\stock.h(44,23): message : Verwenden Sie ggf. "%f" in der Formatzeichenfolge.
+D:\Google Drive\Algorithmen\uebung_1\uebung_1\stock.h(44,23): warning C4477: "fscanf_s": Die Formatzeichenfolge "%lf" erfordert ein Argument vom Typ "double *", das variadic-Argument "6" weist aber den Typ "float *" auf.
+D:\Google Drive\Algorithmen\uebung_1\uebung_1\stock.h(44,23): message : Verwenden Sie ggf. "%f" in der Formatzeichenfolge.
+D:\Google Drive\Algorithmen\uebung_1\uebung_1\stock.h(44,23): warning C4477: "fscanf_s": Die Formatzeichenfolge "%lf" erfordert ein Argument vom Typ "double *", das variadic-Argument "7" weist aber den Typ "unsigned int *" auf.
+D:\Google Drive\Algorithmen\uebung_1\uebung_1\stock.h(44,23): warning C4473: "fscanf_s": nicht genügend Argumente für Formatzeichenfolge übergeben
+D:\Google Drive\Algorithmen\uebung_1\uebung_1\stock.h(44,23): message : Platzhalter und deren Parameter erwarten 8 variadic-Argumente, es wurden aber 7 variadic-Argumente bereitgestellt.
+D:\Google Drive\Algorithmen\uebung_1\uebung_1\stock.h(44,23): message : Das fehlende variadic-Argument "8" ist für die Zeichenfolge "%u" erforderlich.
+D:\Google Drive\Algorithmen\uebung_1\uebung_1\hashtable.h(84,20): warning C4018: "<": Konflikt zwischen "signed" und "unsigned"
+D:\Google Drive\Algorithmen\uebung_1\uebung_1\hashtable.h(87,22): warning C4018: "<": Konflikt zwischen "signed" und "unsigned"
+D:\Google Drive\Algorithmen\uebung_1\uebung_1\hashtable.h(223,21): warning C4018: "<": Konflikt zwischen "signed" und "unsigned"
   uebung_1.vcxproj -> D:\Google Drive\Algorithmen\uebung_1\Debug\uebung_1.exe
