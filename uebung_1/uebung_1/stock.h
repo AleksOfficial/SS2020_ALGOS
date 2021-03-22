@@ -43,7 +43,7 @@ public:
 		n_dataamount = 0;
 		b_data = true;
 		data datapoint;
-		FILE* csv_file;
+		//FILE* csv_file;
 		//fopen_s(&csv_file, filename.c_str(),"r");
 		std::vector<std::string> row;
 		std::string line, word, temp;

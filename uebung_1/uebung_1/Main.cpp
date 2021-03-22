@@ -1,5 +1,5 @@
-#include <iostream>
 #include "hashtable.h"
+#include <iostream>
 
 //Perhaps these Functions can be moved into the Hashtable Class
 
