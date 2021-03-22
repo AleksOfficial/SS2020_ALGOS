@@ -338,7 +338,7 @@ public:
 		}	
 		if (choice[0] == 'T')
 		{
-			std::cout << "Enter the name of your stock." << std::endl << ": ";
+			std::cout << "Enter the tag of your stock." << std::endl << ": ";
 			std::cin >> choice;
 			if (find_stock_name(choice))
 			{
@@ -428,7 +428,14 @@ public:
 
 	bool save()
 	{
-		std::cout << "Hello World! I am save" << std::endl;
+		std::fstream fs;
+		fs.open("data.csv", std::fstream::out | std::fstream::trunc);
+		fs << "s_stock_number,s_tag,s_name,s_date,f_open,f_high,f_low,f_close,f_adj_close,n_volume" << std::endl;
+		for (int i = 0; i < n_max_length; i++) {
+			a_stocks[i].save_data(fs);
+		}
+		fs.close();
+		std::cout << "sucess" << std::endl;
 		return true;
 	}
 	bool load()
