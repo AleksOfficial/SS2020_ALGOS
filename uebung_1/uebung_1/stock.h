@@ -44,7 +44,7 @@ public:
 		b_data = true;
 		data datapoint;
 		FILE* csv_file;
-		fopen_s(&csv_file, filename.c_str(),"r");
+		//fopen_s(&csv_file, filename.c_str(),"r");
 		std::vector<std::string> row;
 		std::string line, word, temp;
 		std::ifstream fin;
@@ -97,7 +97,14 @@ public:
 		}
 		return true;
 	}
+	bool save_data(std::fstream& fs) {
+		std::list<data>::iterator it;
+		for (it = l_datavalues.begin(); it != l_datavalues.end(); it++) {
+			fs << s_stock_number << "," << s_tag << "," << s_name << "," << it->s_date << "," << it->f_open << "," << it->f_high << "," << it->f_low << "," << it->f_close << "," << it->f_adj_close << "," << it->n_volume << std::endl;
+		}
+		return true;
 
+	}
 
 };
 
