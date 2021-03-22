@@ -15,9 +15,11 @@ private:
 	typedef struct s_name_search_data {
 		int n_index_a_stocks;
 		int n_collisions;
+		bool b_deleted;
 		//Constructors for the Datapoints of the namesearch
-		s_name_search_data() :n_index_a_stocks(-1), n_collisions(0) {}
-		s_name_search_data(int index, int collisions) :n_index_a_stocks(index), n_collisions(collisions) {}
+		s_name_search_data() :n_index_a_stocks(-1), n_collisions(0),b_deleted(false) {}
+		s_name_search_data(int index, int collisions) :n_index_a_stocks(index), n_collisions(collisions),b_deleted(false) {}
+		s_name_search_data(bool deleted) :n_index_a_stocks(-2), n_collisions(0), b_deleted(deleted) {}
 
 	}name_search_data;
 
@@ -28,11 +30,16 @@ private:
 	int n_amount_stocks;
 	Stock * a_stocks;
 	Stock *d_current_stock; //This can be used to access the last 
-	enum error_type { exists, not_exist, import_not_found, import_error,no_data_found, no_file_name}; //extend this error list as needed and add an error msg in the error method
+	enum error_type { exists, not_exist, import_not_found, import_error,no_data_found, no_file_name, max_stocks_reached}; //extend this error list as needed and add an error msg in the error method
+	int n_amount_stocks;
+	int n_last_free_pos_names;
+	int n_last_coll_names;
+	const int n_max_stocks = 1000;
+
 //Constructor
 public:
 	Hashtable()
-		: n_max_length(find_next_prime(1000)), n_max_collisions_stocks(0),n_max_collisions_name(0), a_stocks(new Stock[n_max_length]), a_name_search(new name_search_data[n_max_length])
+		: n_max_length(find_next_prime(2000)), n_max_collisions_stocks(0),n_max_collisions_name(0), a_stocks(new Stock[n_max_length]), a_name_search(new name_search_data[n_max_length]), n_amount_stocks(0)
 	{}
 private:
 //private-Methods
@@ -66,16 +73,18 @@ private:
 		Stock new_stock(name,tag,wkn,collisions,0);
 		a_stocks[index_stocks_array] = new_stock;
 
-		//Create Names search entry in names array	 
+		//Create Names search entry in names array
+		//Needs a condition that checks if a last position has been detected that's free after deletion
 		int index_name_search = hash_function(name);
 		if (a_name_search[index_name_search].n_index_a_stocks > 0) //collision! quadratic probing
-			names_collisions = quadratic_probing_name(index_name_search, name)*(-1);
+			names_collisions = quadratic_probing_name(index_name_search, name,true)*(-1);
 		quadratic_probing(index_name_search, names_collisions);
 		s_name_search_data new_searchpoint(index_stocks_array, names_collisions);
 		a_name_search[index_name_search] = new_searchpoint;
 
 		//set current Stock to the last entry
 		d_current_stock = &a_stocks[index_stocks_array];
+		n_amount_stocks++;
 		return true;
 	}
 	// Hash Function: H(s) = s[0]*(7^n-1)+ s[1] * (7^n-2) + ... + s[n-1]; n -> Length of string -1; Maybe we should increase the factor it is multiplied by in the hashfunction 
@@ -121,7 +130,7 @@ private:
 		return (-1)*collisions;
 	}
 	//returns index from a_names_search array which stores the index of the value found in the stocks array and -1*(amount of collisions) if the value is not found in the stocks array // NEEDS CHANGE
-	int quadratic_probing_name(int& n_hash_value, std::string& stock_name)
+	int quadratic_probing_name(int& n_hash_value, std::string& stock_name, bool creating_stuff)
 	{
 		int collisions = 1;
 		int prev_hash_key = n_hash_value;
@@ -132,6 +141,16 @@ private:
 			int index = a_name_search[prev_hash_key].n_index_a_stocks;
 			if (index ==-1) // this will actually break if a stock in between is deleted. 
 				break;
+			if (creating_stuff)
+			{
+				if (index == -2) //Needs to safe this position in a member variable the collisions and the address of the element during CREATION OF A STOCK
+					break;
+			}
+			else
+			{
+				if (index == -2)
+					continue;
+			}
 			d_current_stock = &a_stocks[index];
 			if (d_current_stock->s_name.compare(stock_name) == 0)
 				return prev_hash_key;
@@ -174,7 +193,7 @@ private:
 		else
 		{
 			//Insert condition here to check if the amount of collisions is higher than the actual size of the hashtable
-			hash_key = quadratic_probing_name(hash_key, stock_name);
+			hash_key = quadratic_probing_name(hash_key, stock_name,false);
 			if (hash_key < 0)
 				return false;
 			
@@ -206,6 +225,8 @@ private:
 			case no_file_name:
 				std::cout << "Error (6): No Filename found. Please put the Filename between < and > and do not use a space between the command and the filename." << std::endl;
 				break;
+			case max_stocks_reached:
+				std::cout << " Error (7): Stock Limit reached. Delete a Stock first before adding another one. " << std::endl;
 		}
 	}
 //functions of the hashtable
@@ -264,7 +285,29 @@ public:
 
 	bool del()
 	{
-		std::cout << "Hello World! I am del" << std::endl;
+		std::string input;
+		std::cout << "Enter the name of the stock you'd like to delete." << std::endl << ": ";
+		std::cin >> input;
+		to_upper(input);
+		if (!find_stock_name(input))
+		{
+			error(not_exist);
+			return false;
+		}
+		//Search index in a_names_search array
+		int index_name_search = hash_function(input);
+		int names_collisions = 0;
+		//Searching for the stock address in a_name_search
+		if (input.compare(a_stocks[a_name_search[index_name_search].n_index_a_stocks].s_name)!=0) //wrong value! quadratic probing
+			names_collisions = quadratic_probing_name(index_name_search, input,false) * (-1);
+		quadratic_probing(index_name_search, names_collisions);
+		s_name_search_data delete_entry(true);
+		a_name_search[index_name_search] = delete_entry;
+		Stock delete_stock;
+		d_current_stock->l_datavalues.clear();
+		*(d_current_stock) = delete_stock;
+
+		std::cout << "Stock successfully deleted. " << std::endl;
 		return true;
 	}
 	bool import_data()

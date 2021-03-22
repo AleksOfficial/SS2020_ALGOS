@@ -94,6 +94,7 @@ typedef struct data {
 				n_dataamount--;
 			}
 		}
+		fin.close();
 		return true;
 	}
 	bool save_data(std::fstream& fs) {
