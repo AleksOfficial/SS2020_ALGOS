@@ -25,6 +25,7 @@ public:
 	int n_collision_value;
 	std::list<data> l_datavalues;
 	bool b_set;
+	bool was_set;
 	bool b_data;
 	int n_dataamount;
 	//Constructor
@@ -105,6 +106,15 @@ public:
 		return true;
 
 	}
-
+	bool delete_data() {
+		s_stock_number = "";
+		s_tag = "";
+		s_name = "";
+		l_datavalues.erase(l_datavalues.begin(), l_datavalues.end());
+		b_set = false;
+		was_set = true;
+		b_data = false;
+		return true;
+	}
 };
 
