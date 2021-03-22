@@ -25,11 +25,6 @@ private:
 	int n_max_collisions_name;
 	name_search_data* a_name_search;
 	int n_amount_stocks;
-<<<<<<< Updated upstream
-	Stock * a_stocks;
-	Stock d_current_stock; //This can be used to access the last 
-	enum error_type { exists, not_exist, import_not_found, import_error}; //extend this error list as needed and add an error msg in the error method
-=======
 	Stock* a_stocks;
 	Stock* d_current_stock; //This can be used to access the last 
 	enum error_type { exists, not_exist, import_not_found, import_error, no_data_found, no_file_name, file_name_temp }; //extend this error list as needed and add an error msg in the error method
