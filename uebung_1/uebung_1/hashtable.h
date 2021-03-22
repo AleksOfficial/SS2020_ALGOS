@@ -63,6 +63,11 @@ private:
 	}
 	bool create_stock(std::string& name, std::string& tag, std::string& wkn)
 	{
+		if (n_amount_stocks > 1000)
+		{
+			error(max_stocks_reached);
+			return false;
+		}
 		int collisions = 0;
 		int names_collisions = 0;
 		//create stock entry in stocks array
