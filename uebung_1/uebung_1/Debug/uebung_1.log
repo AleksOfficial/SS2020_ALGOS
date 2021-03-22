@@ -1,5 +1,9 @@
 ﻿  main.cpp
-D:\Google Drive\Algorithmen\uebung_1\uebung_1\hashtable.h(84,20): warning C4018: "<": Konflikt zwischen "signed" und "unsigned"
-D:\Google Drive\Algorithmen\uebung_1\uebung_1\hashtable.h(87,22): warning C4018: "<": Konflikt zwischen "signed" und "unsigned"
-D:\Google Drive\Algorithmen\uebung_1\uebung_1\hashtable.h(223,21): warning C4018: "<": Konflikt zwischen "signed" und "unsigned"
+D:\Google Drive\Algorithmen\uebung_1\uebung_1\stock.h(45,9): warning C4101: "csv_file": Unreferenzierte lokale Variable
+D:\Google Drive\Algorithmen\uebung_1\uebung_1\hashtable.h(85,20): warning C4018: "<": Konflikt zwischen "signed" und "unsigned"
+D:\Google Drive\Algorithmen\uebung_1\uebung_1\hashtable.h(88,22): warning C4018: "<": Konflikt zwischen "signed" und "unsigned"
+D:\Google Drive\Algorithmen\uebung_1\uebung_1\hashtable.h(230,21): warning C4018: "<": Konflikt zwischen "signed" und "unsigned"
+D:\Google Drive\Algorithmen\uebung_1\uebung_1\hashtable.h(381,1): warning C4305: "Initialisierung": Verkürzung von "__int64" in "float"
+D:\Google Drive\Algorithmen\uebung_1\uebung_1\hashtable.h(383,21): warning C4018: "<": Konflikt zwischen "signed" und "unsigned"
+D:\Google Drive\Algorithmen\uebung_1\uebung_1\hashtable.h(504): warning C4715: "Hashtable::load": Nicht alle Codepfade geben einen Wert zurück.
   uebung_1.vcxproj -> D:\Google Drive\Algorithmen\uebung_1\Debug\uebung_1.exe

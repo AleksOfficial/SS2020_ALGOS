@@ -348,9 +348,12 @@ public:
 				std::cout << " Stock found! " << std::endl;
 				if (d_current_stock->b_data)
 				{
-					auto values = d_current_stock->l_datavalues.end()--;
+					int last_val_index = d_current_stock->n_dataamount-1;
+					Stock::data *values = &d_current_stock->l_datavalues[last_val_index];
+
+					std::cout << "Name: " << d_current_stock->s_name << ", Tag: " << d_current_stock->s_tag <<std::endl;
 					std::cout << "Last Data: Date: " << values->s_date << ", Open: " << values->f_open << ", High: " << values->f_high
-						<< ", Close: " << values->f_close << ", Adjusted Close: " << values->f_adj_close << ", Volume: " << values->n_volume;
+						<< ", Close: " << values->f_close << ", Adjusted Close: " << values->f_adj_close << ", Volume: " << values->n_volume << std::endl;
 				}
 				else
 					std::cout << "Currently no Data available!" << std::endl;

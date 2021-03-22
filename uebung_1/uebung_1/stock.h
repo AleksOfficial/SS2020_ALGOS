@@ -4,6 +4,10 @@
 #include <string>
 #include <vector>
 #pragma once
+class Stock
+{
+public:
+	
 typedef struct data {
 	std::string s_date;
 	float f_open;
@@ -13,10 +17,6 @@ typedef struct data {
 	float f_adj_close;
 	unsigned n_volume;
 }data;
-class Stock
-{
-public:
-	
 	//Members
 	std::string s_stock_number;
 	std::string s_tag;
@@ -47,7 +47,7 @@ public:
 		std::vector<std::string> row;
 		std::string line, word, temp;
 		std::ifstream fin;
-		fin.open(filename.c_str(),std::ios::in);
+		fin.open(filename.c_str());
 		bool headings = true;
 		while (fin >> temp)
 		{
