@@ -99,6 +99,8 @@ typedef struct data {
 	}
 	bool save_data(std::fstream& fs) {
 		std::vector<data>::iterator it;
+		if (l_datavalues.empty() && b_set == true)
+			fs << s_stock_number << "," << s_tag << "," << s_name << std::endl;
 		for (it = l_datavalues.begin(); it != l_datavalues.end(); it++) {
 			fs << s_stock_number << "," << s_tag << "," << s_name << "," << it->s_date << "," << it->f_open << "," << it->f_high << "," << it->f_low << "," << it->f_close << "," << it->f_adj_close << "," << it->n_volume << std::endl;
 		}
