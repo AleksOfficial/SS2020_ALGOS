@@ -14,9 +14,10 @@ private:
 	typedef struct s_name_search_data {
 		int n_index_a_stocks;
 		int n_collisions;
+		bool was_set;
 		//Constructors for the Datapoints of the namesearch
-		s_name_search_data() :n_index_a_stocks(-1), n_collisions(0) {}
-		s_name_search_data(int index, int collisions) :n_index_a_stocks(index), n_collisions(collisions) {}
+		s_name_search_data() :n_index_a_stocks(-1), n_collisions(0), was_set(false) {}
+		s_name_search_data(int index, int collisions, bool set) :n_index_a_stocks(index), n_collisions(collisions), was_set(set) {}
 
 	}name_search_data;
 
@@ -34,6 +35,10 @@ public:
 	Hashtable()
 		: n_max_length(find_next_prime(1000)), n_max_collisions_stocks(0), n_max_collisions_name(0), a_stocks(new Stock[n_max_length]), a_name_search(new name_search_data[n_max_length])
 	{}
+	~Hashtable() {
+		delete a_stocks;
+		delete a_name_search;
+	}
 private:
 	//private-Methods
 	int find_next_prime(int start_val)
@@ -71,7 +76,7 @@ private:
 		if (a_name_search[index_name_search].n_index_a_stocks > 0) //collision! quadratic probing
 			names_collisions = quadratic_probing_name(index_name_search, name) * (-1);
 		quadratic_probing(index_name_search, names_collisions);
-		s_name_search_data new_searchpoint(index_stocks_array, names_collisions);
+		s_name_search_data new_searchpoint(index_stocks_array, names_collisions, true);
 		a_name_search[index_name_search] = new_searchpoint;
 
 		//set current Stock to the last entry
@@ -136,9 +141,13 @@ private:
 			prev_hash_key %= n_max_length;
 			int index = a_name_search[prev_hash_key].n_index_a_stocks;
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 			if (index < -1) // this will actually break if a stock in between is deleted. 
 =======
 			if (index == -1) // this will actually break if a stock in between is deleted. 
+>>>>>>> Stashed changes
+=======
+			if (index ==-1 && a_name_search[prev_hash_key].was_set == false) // this will actually break if a stock in between is deleted. 
 >>>>>>> Stashed changes
 				break;
 			d_current_stock = a_stocks[index];
@@ -177,19 +186,61 @@ private:
 
 	}
 	//find_stock: returns true if the stock is found in the array, else false. the current_stock is set to the last search value
-	bool find_stock_name(std::string& stock_name)
+	bool find_stock_name(std::string& stock_name, bool new_stock = false)
 	{
 		int hash_key = hash_function(stock_name);
 		int name_indexvalue = a_name_search[hash_key].n_index_a_stocks;
+<<<<<<< Updated upstream
 		if (name_indexvalue == -1)
 			return false;
 		if (stock_name.compare(a_stocks[name_indexvalue].s_name) == 0)
 			return true;
+=======
+		if (new_stock == true) {
+			if (name_indexvalue == -1)
+				return false;
+		}
+		else {
+			if (name_indexvalue == -1 && a_name_search[hash_key].was_set == false)
+				return false;
+			else if (name_indexvalue == -1 && a_name_search[hash_key].was_set == true) {
+				//Insert condition here to check if the amount of collisions is higher than the actual size of the hashtable
+				hash_key = quadratic_probing_name(hash_key, stock_name);
+				if (hash_key < 0)
+					return false;
+
+				d_current_stock = &a_stocks[a_name_search[hash_key].n_index_a_stocks];
+				return true;
+			}
+			else if (stock_name.compare(a_stocks[name_indexvalue].s_name) == 0)
+				return true;
+			else
+			{
+				//Insert condition here to check if the amount of collisions is higher than the actual size of the hashtable
+				hash_key = quadratic_probing_name(hash_key, stock_name);
+				if (hash_key < 0)
+					return false;
+
+				d_current_stock = &a_stocks[a_name_search[hash_key].n_index_a_stocks];
+				return true;
+
+			}
+		}
+	}
+	int return_name_hash(std::string& stock_name) {
+		int hash_key = hash_function(stock_name);
+		int name_indexvalue = a_name_search[hash_key].n_index_a_stocks;
+		if (name_indexvalue == -1 && a_name_search[hash_key].was_set == false)
+			return -1;
+		if (stock_name.compare(a_stocks[name_indexvalue].s_name) == 0)
+			return hash_key;
+>>>>>>> Stashed changes
 		else
 		{
 			//Insert condition here to check if the amount of collisions is higher than the actual size of the hashtable
 			hash_key = quadratic_probing_name(hash_key, stock_name);
 			if (hash_key < 0)
+<<<<<<< Updated upstream
 				return false;
 <<<<<<< Updated upstream
 			
@@ -199,6 +250,10 @@ private:
 			d_current_stock = &a_stocks[hash_key];
 >>>>>>> Stashed changes
 			return true;
+=======
+				return -1;
+			return hash_key;
+>>>>>>> Stashed changes
 
 		}
 	}
@@ -277,7 +332,7 @@ public:
 		std::cin >> name;
 		to_upper(name);
 		//Search if Stock Exists
-		if (find_stock_name(name))
+		if (find_stock_name(name, true))
 		{
 			error(exists);
 			return false;
@@ -301,7 +356,28 @@ public:
 	bool del()
 	{
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 		std::cout << "Hello World! I am del" << std::endl;
+=======
+		std::string tag;
+		std::cout << "Enter the Tag of the Stock you would like to delete." << std::endl << ": ";
+		std::cin >> tag;
+		if (!find_stock_tag(tag))
+		{
+			error(not_exist);
+			return false;
+		}
+		std::cout << "Stock found! Deleting...";
+		std::string name = d_current_stock->s_name;
+		int name_hash = return_name_hash(name);
+		a_name_search[name_hash].n_index_a_stocks = -1;
+		a_name_search[name_hash].n_collisions = 0;
+		a_name_search[name_hash].was_set = true;
+		if (d_current_stock->delete_data()) {
+			std::cout << "deleted" << std::endl;
+		}
+
+>>>>>>> Stashed changes
 		return true;
 	}
 	bool import_data()
