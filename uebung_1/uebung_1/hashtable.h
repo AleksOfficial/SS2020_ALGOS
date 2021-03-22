@@ -2,7 +2,7 @@
 #include "stock.h"
 #include <fstream>
 #include <stdio.h>
-
+#include <errno.h>
 
 
 class Hashtable
@@ -271,16 +271,30 @@ public:
 			return false;
 		}
 		std::cout << "Stock found! Importing...";
+		tag = tag + ".csv";
+		/*
 		FILE* csv_file;
-		tag = "../Data/" + tag + ".csv";
-		
+		errno_t err;
+		if ((err = fopen_s(&csv_file, tag.c_str(), "r")) != 0) {
+			// File could not be opened. filepoint was set to NULL
+			// error code is returned in err.
+			// error message can be retrieved with strerror(err);
+
+			// If your environment insists on using so called secure
+			// functions, use this instead:
+			char buf[10000];
+			strerror_s(buf, sizeof buf, err);
+			fprintf_s(stderr, "cannot open file '%s': %s\n",
+				csv_file, buf);
 		fopen_s(&csv_file,tag.c_str(),"r");
+		}
+		
 		if (csv_file == nullptr)
 		{
 			error(import_not_found);
 			return false;
-		}
-		if (d_current_stock.import_data(csv_file)) {
+		}*/
+		if (d_current_stock.import_data(tag)) {
 			std::cout << "Data imported!" << std::endl;
 			return true;
 		}

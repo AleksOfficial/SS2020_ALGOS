@@ -1,5 +1,9 @@
 #include <iostream>
+#include <fstream>
+#include <sstream>
 #include <list>
+#include <string>
+#include <vector>
 #pragma once
 
 class Stock
@@ -34,21 +38,62 @@ public:
 		//insert loop here to load the data or call the function below? idk 
 	}
 
-	bool import_data(FILE * csv_file) //no error handling here. maybe during reading there could be an error handler or smth.
+	bool import_data(std::string filename) //no error handling here. maybe during reading there could be an error handler or smth.
 	{
 		n_dataamount = 0;
 		b_data = true;
-		while (!feof(csv_file))
+		data datapoint;
+		FILE* csv_file;
+		fopen_s(&csv_file, filename.c_str(),"r");
+		std::vector<std::string> row;
+		std::string line, word, temp;
+		std::ifstream fin;
+		fin.open(filename.c_str(),std::ios::in);
+		bool headings = true;
+		while (fin >> temp)
 		{
+			row.clear();
 			data datapoint;
-			fscanf_s(csv_file, "%s,%lf,%lf,%lf,%lf,%lf,%u", &datapoint.s_date, &datapoint.f_open, &datapoint.f_high, &datapoint.f_low, &datapoint.f_close, &datapoint.f_adj_close, &datapoint.n_volume);
-			if (n_dataamount > 30)
+			std::getline(fin, line);
+			if (headings)
 			{
-				l_datavalues.erase(l_datavalues.begin(),l_datavalues.begin());
-				n_dataamount--;
+				headings = false;
+				continue;
 			}
+			std::stringstream x(temp);
+			while (std::getline(x, word, ','))
+			{
+				row.push_back(word);
+			}
+			datapoint.s_date = row[0];
+			datapoint.f_open = std::stof(row[1]);
+			datapoint.f_high = std::stof(row[2]);
+			datapoint.f_low = std::stof(row[3]);
+			datapoint.f_close = std::stof(row[4]);
+			datapoint.f_adj_close = std::stof(row[5]);
+			datapoint.n_volume = std::stoi(row[6]);
+
+		/*
+			//why does this not work?
+			//char* date[11];
+			//bool heading = true;
+			//fscanf_s(csv_file, "%s,%lf,%lf,%lf,%lf,%lf,%u");
+			if (heading)
+			{
+				fscanf_s(csv_file, "%s");
+			}
+			fscanf_s(csv_file, "%10s,%lf,%lf,%lf,%lf,%lf,%u\n", &datapoint.f_open, &datapoint.f_high, &datapoint.f_low, &datapoint.f_close, &datapoint.f_adj_close, &datapoint.n_volume);
+			*/
+			
+
+
 			l_datavalues.push_back(datapoint);
 			n_dataamount++;
+			if (n_dataamount > 30)
+			{
+				l_datavalues.pop_front();
+				n_dataamount--;
+			}
 		}
 		return true;
 	}
