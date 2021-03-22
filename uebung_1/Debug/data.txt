@@ -1,1 +1,0 @@
-s_stock_number,s_tag,s_name,s_date,f_open,f_high,f_low,f_close,f_adj_close,n_volume

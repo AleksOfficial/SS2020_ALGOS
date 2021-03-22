@@ -31,7 +31,6 @@ private:
 	Stock * a_stocks;
 	Stock *d_current_stock; //This can be used to access the last 
 	enum error_type { exists, not_exist, import_not_found, import_error,no_data_found, no_file_name, max_stocks_reached}; //extend this error list as needed and add an error msg in the error method
-	int n_amount_stocks;
 	int n_last_free_pos_names;
 	int n_last_coll_names;
 	const int n_max_stocks = 1000;
