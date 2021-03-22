@@ -1,7 +1,6 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <list>
 #include <string>
 #include <vector>
 #pragma once
@@ -23,7 +22,7 @@ public:
 	std::string s_tag;
 	std::string s_name;
 	int n_collision_value;
-	std::list<data> l_datavalues;
+	std::vector<data> l_datavalues;
 	bool b_set;
 	bool b_data;
 	int n_dataamount;
@@ -91,7 +90,7 @@ public:
 			n_dataamount++;
 			if (n_dataamount > 30)
 			{
-				l_datavalues.pop_front();
+				l_datavalues.erase(l_datavalues.begin());
 				n_dataamount--;
 			}
 		}

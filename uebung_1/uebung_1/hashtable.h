@@ -3,7 +3,8 @@
 #include <fstream>
 #include <stdio.h>
 #include <errno.h>
-
+#include <Windows.h> 
+#include <cstdlib>
 
 class Hashtable
 {
@@ -26,8 +27,8 @@ private:
 	name_search_data * a_name_search; 
 	int n_amount_stocks;
 	Stock * a_stocks;
-	Stock d_current_stock; //This can be used to access the last 
-	enum error_type { exists, not_exist, import_not_found, import_error}; //extend this error list as needed and add an error msg in the error method
+	Stock *d_current_stock; //This can be used to access the last 
+	enum error_type { exists, not_exist, import_not_found, import_error,no_data_found}; //extend this error list as needed and add an error msg in the error method
 //Constructor
 public:
 	Hashtable()
@@ -74,7 +75,7 @@ private:
 		a_name_search[index_name_search] = new_searchpoint;
 
 		//set current Stock to the last entry
-		d_current_stock = new_stock;
+		d_current_stock = &a_stocks[index_stocks_array];
 		return true;
 	}
 	// Hash Function: H(s) = s[0]*(7^n-1)+ s[1] * (7^n-2) + ... + s[n-1]; n -> Length of string -1; Maybe we should increase the factor it is multiplied by in the hashfunction 
@@ -112,8 +113,8 @@ private:
 		{
 			prev_hash_key += (i*i);
 			prev_hash_key %= n_max_length;
-			d_current_stock = a_stocks[prev_hash_key];
-			if (d_current_stock.s_tag.compare(stock_tag)==0)
+			d_current_stock = &a_stocks[prev_hash_key];
+			if (d_current_stock->s_tag.compare(stock_tag)==0)
 				return prev_hash_key;
 			collisions++;
 		}
@@ -129,10 +130,10 @@ private:
 			prev_hash_key += (i * i);
 			prev_hash_key %= n_max_length;
 			int index = a_name_search[prev_hash_key].n_index_a_stocks;
-			if (index < -1) // this will actually break if a stock in between is deleted. 
+			if (index ==-1) // this will actually break if a stock in between is deleted. 
 				break;
-			d_current_stock = a_stocks[index];
-			if (d_current_stock.s_name.compare(stock_name) == 0)
+			d_current_stock = &a_stocks[index];
+			if (d_current_stock->s_name.compare(stock_name) == 0)
 				return prev_hash_key;
 			collisions++;
 		}
@@ -145,8 +146,8 @@ private:
 	bool find_stock_tag(std::string& stock_tag)
 	{
 		int hash_key = hash_function(stock_tag);
-		d_current_stock = a_stocks[hash_key];
-		if (stock_tag.compare(d_current_stock.s_tag) == 0)
+		d_current_stock = &a_stocks[hash_key];
+		if (stock_tag.compare(d_current_stock->s_tag) == 0)
 			return true;
 		else
 		{
@@ -156,7 +157,7 @@ private:
 			if (hash_key < 0)
 				return false;
 			
-			d_current_stock = a_stocks[hash_key];
+			d_current_stock = &a_stocks[hash_key];
 			return true;
 		}
 
@@ -177,7 +178,7 @@ private:
 			if (hash_key < 0)
 				return false;
 			
-			d_current_stock = a_stocks[hash_key];
+			d_current_stock = &a_stocks[hash_key];
 			return true;
 
 		}
@@ -198,6 +199,9 @@ private:
 				break;
 			case import_error:
 				std::cout << "Error (4): An Error occured during the import of the File." << std::endl;
+				break;
+			case no_data_found:
+				std::cout << "Error (5): An Error occured during the import of the File." << std::endl;
 				break;
 		}
 	}
@@ -294,7 +298,7 @@ public:
 			error(import_not_found);
 			return false;
 		}*/
-		if (d_current_stock.import_data(tag)) {
+		if (d_current_stock->import_data(tag)) {
 			std::cout << "Data imported!" << std::endl;
 			return true;
 		}
@@ -320,9 +324,9 @@ public:
 			if (find_stock_name(choice))
 			{
 				std::cout << " Stock found! " << std::endl;
-				if (d_current_stock.b_data)
+				if (d_current_stock->b_data)
 				{
-					auto values = d_current_stock.l_datavalues.end()--;
+					auto values = d_current_stock->l_datavalues.end()--;
 					std::cout << "Last Data: Date: " << values->s_date << ", Open: " << values->f_open << ", High: " << values->f_high 
 						<< ", Close: " << values->f_close << ", Adjusted Close: " << values->f_adj_close << ", Volume: " << values->n_volume;
 				}
@@ -339,9 +343,9 @@ public:
 			if (find_stock_name(choice))
 			{
 				std::cout << " Stock found! " << std::endl;
-				if (d_current_stock.b_data)
+				if (d_current_stock->b_data)
 				{
-					auto values = d_current_stock.l_datavalues.end()--;
+					auto values = d_current_stock->l_datavalues.end()--;
 					std::cout << "Last Data: Date: " << values->s_date << ", Open: " << values->f_open << ", High: " << values->f_high
 						<< ", Close: " << values->f_close << ", Adjusted Close: " << values->f_adj_close << ", Volume: " << values->n_volume;
 				}
@@ -355,7 +359,70 @@ public:
 	}
 	bool plot()
 	{
-		std::cout << "Hello World! I am plot" << std::endl;
+		std::string tag;
+		std::cout << "Enter the Stock Tag to plot the dedicated graph for it." << std::endl <<": ";
+		std::cin >> tag;
+		if (!find_stock_tag(tag))
+		{
+			error(not_exist);
+			return false;
+		}
+		if (!d_current_stock->b_data)
+		{
+			error(no_data_found);
+			return false;
+		}
+		float max = 0, min = 99999999999;
+		//evaluate highest/smallest stock price
+		for (int j = 0; j < d_current_stock->l_datavalues.size(); j++)
+		{
+			max = (d_current_stock->l_datavalues[j].f_high > max ? d_current_stock->l_datavalues[j].f_high : max);
+			min = (d_current_stock->l_datavalues[j].f_low < min ? d_current_stock->l_datavalues[j].f_low : min);
+		}
+		float range = max - min;
+		float unit = range / 25;
+		for (int row = 0; row < 27; row++)
+		{
+			for (int col = 0; col < 60; col++)
+			{
+				if (col == 0)
+				{
+					if (row% 5==0)
+					{
+						float scale = max-(unit*row);
+						char buf[1024];
+						sprintf_s(buf, "%4.2f", scale);
+						std::cout << std::string(buf) << " |";
+					}
+					else
+						std::cout << "       |";
+					
+
+				}
+					
+				else if (row < 25)
+				{
+					float high_value = (float)(d_current_stock->l_datavalues[(int)(col/2)].f_close);
+					float upper_range = max - high_value;
+					if ((25-row)*unit <= upper_range)
+						std::cout << "#";
+					else
+						std::cout << " ";
+				}
+				else if (row == 25)
+					std::cout << "_";
+				else if (row == 26)
+				{
+					if ((col % 20) - 2 == 0)
+						std::cout << d_current_stock->l_datavalues[(int)(col / 2)].s_date;
+					else if((col%20) <13)
+						std::cout << " ";
+				}
+			}
+			std::cout << std::endl;
+		}
+
+
 		return true;
 	}
 
