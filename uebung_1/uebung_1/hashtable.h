@@ -28,7 +28,7 @@ private:
 	int n_amount_stocks;
 	Stock * a_stocks;
 	Stock *d_current_stock; //This can be used to access the last 
-	enum error_type { exists, not_exist, import_not_found, import_error,no_data_found}; //extend this error list as needed and add an error msg in the error method
+	enum error_type { exists, not_exist, import_not_found, import_error,no_data_found, no_file_name}; //extend this error list as needed and add an error msg in the error method
 //Constructor
 public:
 	Hashtable()
@@ -203,6 +203,9 @@ private:
 			case no_data_found:
 				std::cout << "Error (5): An Error occured during the import of the File." << std::endl;
 				break;
+			case no_file_name:
+				std::cout << "Error (6): No Filename found. Please put the Filename between < and > and do not use a space between the command and the filename." << std::endl;
+				break;
 		}
 	}
 //functions of the hashtable
@@ -331,16 +334,16 @@ public:
 						<< ", Close: " << values->f_close << ", Adjusted Close: " << values->f_adj_close << ", Volume: " << values->n_volume;
 				}
 				else
-					std::cout << "Currently no Data available!" << std::endl;
+				std::cout << "Currently no Data available!" << std::endl;
 			}
 			else
-				error(not_exist);
-		}	
+			error(not_exist);
+		}
 		if (choice[0] == 'T')
 		{
 			std::cout << "Enter the tag of your stock." << std::endl << ": ";
 			std::cin >> choice;
-			if (find_stock_name(choice))
+			if (find_stock_tag(choice))
 			{
 				std::cout << " Stock found! " << std::endl;
 				if (d_current_stock->b_data)
@@ -360,7 +363,7 @@ public:
 	bool plot()
 	{
 		std::string tag;
-		std::cout << "Enter the Stock Tag to plot the dedicated graph for it." << std::endl <<": ";
+		std::cout << "Enter the Stock Tag to plot the dedicated graph for it." << std::endl << ": ";
 		std::cin >> tag;
 		if (!find_stock_tag(tag))
 		{
@@ -387,24 +390,24 @@ public:
 			{
 				if (col == 0)
 				{
-					if (row% 5==0)
+					if (row % 5 == 0)
 					{
-						float scale = max-(unit*row);
+						float scale = max - (unit * row);
 						char buf[1024];
 						sprintf_s(buf, "%4.2f", scale);
 						std::cout << std::string(buf) << " |";
 					}
 					else
 						std::cout << "       |";
-					
+
 
 				}
-					
+
 				else if (row < 25)
 				{
-					float high_value = (float)(d_current_stock->l_datavalues[(int)(col/2)].f_close);
+					float high_value = (float)(d_current_stock->l_datavalues[(int)(col / 2)].f_close);
 					float upper_range = max - high_value;
-					if ((25-row)*unit <= upper_range)
+					if ((25 - row) * unit <= upper_range)
 						std::cout << "#";
 					else
 						std::cout << " ";
@@ -415,7 +418,7 @@ public:
 				{
 					if ((col % 20) - 2 == 0)
 						std::cout << d_current_stock->l_datavalues[(int)(col / 2)].s_date;
-					else if((col%20) <13)
+					else if ((col % 20) < 13)
 						std::cout << " ";
 				}
 			}
@@ -426,22 +429,75 @@ public:
 		return true;
 	}
 
-	bool save()
+	bool save(std::string name)
 	{
+		int first = name.find("<");
+		int last = name.find(">");
+		if ((first == std::string::npos) || (last == std::string::npos)) {
+			error(no_file_name);
+			return false;
+		}
+		name = name.substr(first + 1, last-first-1);
 		std::fstream fs;
-		fs.open("data.csv", std::fstream::out | std::fstream::trunc);
+		std::string file = name + ".csv";
+		fs.open(file, std::fstream::out | std::fstream::trunc);
 		fs << "s_stock_number,s_tag,s_name,s_date,f_open,f_high,f_low,f_close,f_adj_close,n_volume" << std::endl;
 		for (int i = 0; i < n_max_length; i++) {
 			a_stocks[i].save_data(fs);
 		}
 		fs.close();
-		std::cout << "sucess" << std::endl;
 		return true;
 	}
-	bool load()
+	bool load(std::string name)
 	{
-		std::cout << "Hello World! I am load" << std::endl;
-		return true;
+		int first = name.find("<");
+		int last_char = name.find(">");
+		if ((first == std::string::npos) || (last_char == std::string::npos)) {
+			error(no_file_name);
+			return false;
+		}
+		name = name.substr(first + 1, last_char - first - 1);
+		std::fstream fs;
+		std::string file = name + ".csv";
+		fs.open(file, std::fstream::in);
+		std::fstream fs_temp;
+		std::string line, word, temp, last;
+		std::vector<std::string> row;
+		bool heading = true;
+		while (fs >> temp) {
+			getline(fs, line);
+			if (heading) {
+				last = "";
+				heading = false;
+				continue;
+			}
+			std::stringstream x(temp);
+			while (std::getline(x, word, ','))
+			{
+				row.push_back(word);
+			}
+			if (last == row[2]) {
+				fs_temp << row[3] << "," << row[4] << "," << row[5] << "," << row[6] << "," << row[7] << "," << row[8] << "," << row[9] << std::endl;
+				continue;
+			}
+			else {
+				if(fs_temp.is_open()) {
+					fs_temp.close();
+					d_current_stock->import_data("temp.csv");
+				}
+				create_stock(row[2], row[1], row[0]);
+				fs_temp.open("temp.csv", std::fstream::out | std::fstream::trunc);
+				fs_temp << "s_date, f_open, f_high, f_low, f_close, f_adj_close, n_volume" << std::endl;
+				fs_temp << row[3] << "," << row[4] << "," << row[5] << "," << row[6] << "," << row[7] << "," << row[8] << "," << row[9] << std::endl;
+				last = row[2];
+				continue;
+			}
+		}
+		if (fs_temp.is_open()) {
+			fs_temp.close();
+			d_current_stock->import_data("temp.csv");
+		}
+		
 	}
 	bool quit()
 	{

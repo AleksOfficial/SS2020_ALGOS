@@ -15,8 +15,8 @@ void menu_options()
 	std::cout << "   - IMPORT: Imports a CSV-File and adds/overwrites the data to/of a stock. " << std::endl;
 	std::cout << "   - SEARCH: Searches your program for the specified stock and prints latest data of it. " << std::endl;
 	std::cout << "   - PLOT: Plots a your program for the specified stock and prints latest data of it. " << std::endl;
-	std::cout << "   - SAVE <filename>: Saves your stock selection and data to a file with the specified name. " << std::endl;
-	std::cout << "   - LOAD <filename>: Load your stock selection and data from a specified file. " << std::endl;
+	std::cout << "   - SAVE<filename>: Saves your stock selection and data to a file with the specified name. " << std::endl;
+	std::cout << "   - LOAD<filename>: Load your stock selection and data from a specified file. " << std::endl;
 	std::cout << "   - QUIT: Exit the program. " << std::endl;
 }
 
@@ -47,13 +47,13 @@ void input_handler(Hashtable &current_table,bool &running)
 	{
 		current_table.plot();
 	}
-	else if (command == "SAVE")
+	else if (command.find("SAVE") != std::string::npos)
 	{
-		current_table.save();
+		current_table.save(command);
 	}
-	else if (command == "LOAD")
+	else if (command.find("LOAD") != std::string::npos)
 	{
-		current_table.load();
+		current_table.load(command);
 	}
 	else if (command == "QUIT")
 	{
