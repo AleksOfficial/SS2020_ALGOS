@@ -48,6 +48,8 @@ typedef struct data {
 		std::string line, word, temp;
 		std::ifstream fin;
 		fin.open(filename.c_str());
+		if (!fin)
+			return false;
 		bool headings = true;
 		while (fin >> temp)
 		{

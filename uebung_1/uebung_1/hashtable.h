@@ -72,7 +72,7 @@ private:
 		//create stock entry in stocks array
 		int index_stocks_array = hash_function(tag);
 		if (a_stocks[index_stocks_array].b_set) //collision! quadratic probing
-			collisions = quadratic_probing_tag(index_stocks_array, tag)*(-1);
+			collisions = quadratic_probing_tag(index_stocks_array, tag,true)*(-1);
 		quadratic_probing(index_stocks_array, collisions);
 		Stock new_stock(name,tag,wkn,collisions,0);
 		a_stocks[index_stocks_array] = new_stock;
@@ -118,7 +118,7 @@ private:
 	}
 
 	//Hqp(s) = H(s) +sum(i^2, amount_of_collisions); Returns the index of the stocks array with the value and returns -1*amount of collisions if the value is not found 
-	int quadratic_probing_tag(int& n_hash_value,std::string& stock_tag)
+	int quadratic_probing_tag(int& n_hash_value,std::string& stock_tag,bool creating_stuff)
 	{	
 		int collisions = 1;
 		int prev_hash_key = n_hash_value;
@@ -127,6 +127,9 @@ private:
 			prev_hash_key += (i*i);
 			prev_hash_key %= n_max_length;
 			d_current_stock = &a_stocks[prev_hash_key];
+			if (creating_stuff)
+				if (!d_current_stock->b_set)
+					break;
 			if (d_current_stock->s_tag.compare(stock_tag)==0)
 				return prev_hash_key;
 			collisions++;
@@ -175,7 +178,7 @@ private:
 		else
 		{
 			//Insert condition here to check if the amount of collisions is higher than the actual size of the hashtable
-			hash_key = quadratic_probing_tag(hash_key, stock_tag);
+			hash_key = quadratic_probing_tag(hash_key, stock_tag,false);
 			
 			if (hash_key < 0)
 				return false;
