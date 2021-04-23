@@ -1,0 +1,5 @@
+﻿  tree.cpp
+D:\Google Drive\Algorithmen\uebung_2\uebung_2\tree.cpp(7,8): warning C4101: "input_data": Unreferenzierte lokale Variable
+D:\Google Drive\Algorithmen\uebung_2\uebung_2\tree.cpp(175,20): warning C4018: "<": Konflikt zwischen "signed" und "unsigned"
+D:\Google Drive\Algorithmen\uebung_2\uebung_2\tree.cpp(62): warning C4715: "tree::insert_value": Nicht alle Codepfade geben einen Wert zurück.
+  uebung_2.vcxproj -> D:\Google Drive\Algorithmen\uebung_2\Debug\uebung_2.exe
