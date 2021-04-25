@@ -35,6 +35,11 @@ private:
 	void search_value();
 	void search_subtree();
 	int height(node* node);
+	void get_max();
+	int get_max(node* node);
+	void get_min();
+	int get_min(node* node);
+
 public:
 	bool run;
 	tree() : root(nullptr), avg(-1.0f), max(-1),min(-1),count(0), run(true), avl_tree(false)
