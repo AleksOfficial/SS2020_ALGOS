@@ -215,6 +215,33 @@ bool tree::create_own_tree()
 
 }
 
+int tree::get_max(node* node)
+{
+	if (node == nullptr)
+		return 0;
+	if (node->m_right == nullptr)
+		return node->m_value;
+	get_max(node->m_right);
+
+}
+int tree::get_min(node* node)
+{
+	if (node == nullptr)
+		return 0;
+	if (node->m_left == nullptr)
+		return node->m_value;
+	get_min(node->m_left);
+}
+
+void tree::get_max()
+{
+	
+}
+void tree::get_min()
+{
+
+}
+
 int tree::height(node* node)
 {
 	if (node == nullptr)
