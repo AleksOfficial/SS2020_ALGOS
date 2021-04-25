@@ -16,8 +16,8 @@ class tree {
 private:
 	//Variables
 	node *root;
-	node* search_tree;
-	int search_tree_size;
+	node* sub_tree;
+	int sub_tree_size;
 	float avg;
 	int max;
 	int min;
@@ -43,7 +43,7 @@ private:
 	int height(node* node);
 public:
 	bool run;
-	tree() : root(nullptr), search_tree(nullptr), avg(-1.0f), max(-1),min(-1),count(0), run(true), avl_tree(false), subtree_found(0), search_tree_size(0)
+	tree() : root(nullptr), sub_tree(nullptr), avg(-1.0f), max(-1),min(-1),count(0), run(true), avl_tree(false), subtree_found(0), sub_tree_size(0)
 	{}
 	~tree();
 	void print_menu();

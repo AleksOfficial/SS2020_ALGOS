@@ -16,7 +16,7 @@ bool tree::get_tree(std::string& filename, bool use_root)
 		else {
 			std::cout << "Insertion of " << val << " was successful!" << std::endl;
 			if (!use_root) {
-				search_tree_size++;
+				sub_tree_size++;
 			}
 		}
 			
@@ -34,7 +34,7 @@ bool tree::insert_value(int& val, bool use_root)
 		head = root;
 	}
 	else {
-		head = search_tree;
+		head = sub_tree;
 	}
 	node* new_element = new node(val);
 	if (head == nullptr) {
@@ -43,7 +43,7 @@ bool tree::insert_value(int& val, bool use_root)
 			root = head;
 		}
 		else {
-			search_tree = head;
+			sub_tree = head;
 		}
 		
 	}
@@ -66,7 +66,7 @@ bool tree::insert_value(int& val, bool use_root)
 						root = head;
 					}
 					else {
-						search_tree = head;
+						sub_tree = head;
 					}
 					return true;
 				}
@@ -82,7 +82,7 @@ bool tree::insert_value(int& val, bool use_root)
 						root = head;
 					}
 					else {
-						search_tree = head;
+						sub_tree = head;
 					}
 					return true;
 				}
@@ -188,7 +188,7 @@ void tree::handle_input(std::string& input)
 	if (input == "search")
 		search();
 	if (input == "subtree")
-		search_subtree(root, search_tree);
+		search_subtree(root, sub_tree);
 	if (input == "quit")
 		run = false;
 }
@@ -272,26 +272,26 @@ void tree::check_avl_condition()
 }
 
 void tree::search() {
-	if (search_tree_size == 1) {
+	if (sub_tree_size == 1) {
 		search_value(root);
 	}
-	else if(search_tree_size != 0)
+	else if(sub_tree_size != 0)
 	{
-		search_subtree(root, search_tree);
+		search_subtree(root, sub_tree);
 	}
 	else {
 		std::cout << "No element in subtree!" << std::endl;
 	}
-	delete_tree(search_tree);
-	search_tree_size = 0;
+	delete_tree(sub_tree);
+	sub_tree_size = 0;
 	subtree_found = 0;
 	search_nodes.clear();
 }
 
 void tree::search_value(node *head)
 {
-	if (head->m_value == search_tree->m_value) {
-		std::cout << search_tree->m_value << " found ";
+	if (head->m_value == sub_tree->m_value) {
+		std::cout << sub_tree->m_value << " found ";
 		if (!search_nodes.empty()) {
 			for (auto it = search_nodes.begin(); it != search_nodes.end(); it++) {
 				std::cout << *it;
@@ -305,12 +305,12 @@ void tree::search_value(node *head)
 	else {
 		node* temp = head;
 		search_nodes.push_back(temp->m_value);
-		if (temp->m_value < search_tree->m_value) {
+		if (temp->m_value < sub_tree->m_value) {
 			if (temp->m_right != nullptr) {
 				search_value(temp->m_right);
 			}
 			else {
-				std::cout << search_tree->m_value << "not found!" << std::endl;
+				std::cout << sub_tree->m_value << "not found!" << std::endl;
 				return;
 			}
 		}
@@ -319,7 +319,7 @@ void tree::search_value(node *head)
 				search_value(temp->m_left);
 			}
 			else {
-				std::cout << search_tree->m_value << "not found!" << std::endl;
+				std::cout << sub_tree->m_value << "not found!" << std::endl;
 				return;
 			}
 		}
@@ -371,16 +371,14 @@ void tree::search_subtree(node* head, node* search_head)
 		}
 
 	}
-	if ((head->m_value == root->m_value)&&(subtree_found == search_tree_size)) {
+	if ((head->m_value == root->m_value)&&(subtree_found == sub_tree_size)) {
 		std::cout << "Subtree found!" << std::endl;
 	}
 	return;
 }
 
 void tree::add_search() {
-	int val1 = 5;
-	int val2 = 9;
-	search_tree = new node(val1);
-	search_tree->m_right = new node(val2);
-	search_tree_size = 2;
+	int val1 = 23;
+	sub_tree = new node(val1);
+	sub_tree_size = 1;
 }
