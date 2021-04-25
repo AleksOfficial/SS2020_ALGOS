@@ -1,9 +1,8 @@
 ﻿
 
 #include "tree.h"
-bool tree::get_tree(std::string& filename)
+bool tree::get_tree(std::string& filename, bool use_root)
 {
-
 	FILE* input_data;
 	std::ifstream fin;
 	fin.open(filename);
@@ -12,24 +11,45 @@ bool tree::get_tree(std::string& filename)
 	int val;
 	while (fin >> val)
 	{
-		if (!this->insert_value(val))
+		if (!this->insert_value(val, use_root))
 			std::cout << "There was an error during insertion of value: " << val << "; value already exists" << std::endl;
-		else
-			std::cout << "Insertion of "<<val<<" was successful!" << std::endl;
+		else {
+			std::cout << "Insertion of " << val << " was successful!" << std::endl;
+			if (!use_root) {
+				search_tree_size++;
+			}
+		}
+			
+		
 	}
 	fin >> val;
 	return false;
 }
 
-bool tree::insert_value(int& val)
+bool tree::insert_value(int& val, bool use_root)
 {
 	//construct a new node
+	node* head;
+	if (use_root) {
+		head = root;
+	}
+	else {
+		head = search_tree;
+	}
 	node* new_element = new node(val);
-	if (!root)
-		root = new_element;
+	if (head == nullptr) {
+		head = new_element;
+		if (use_root) {
+			root = head;
+		}
+		else {
+			search_tree = head;
+		}
+		
+	}
 	else
 	{
-		node* traveller = root;
+		node* traveller = head;
 		while (42)
 		{
 			if (traveller->m_value == new_element->m_value)
@@ -42,6 +62,12 @@ bool tree::insert_value(int& val)
 				if (traveller->m_right == nullptr)
 				{
 					traveller->m_right = new_element;
+					if (use_root) {
+						root = head;
+					}
+					else {
+						search_tree = head;
+					}
 					return true;
 				}
 				else
@@ -52,6 +78,12 @@ bool tree::insert_value(int& val)
 				if (traveller->m_left == nullptr)
 				{
 					traveller->m_left = new_element;
+					if (use_root) {
+						root = head;
+					}
+					else {
+						search_tree = head;
+					}
 					return true;
 				}
 				else
@@ -130,7 +162,7 @@ void tree::handle_input(std::string& input)
 		delete_tree();
 		input.append(".txt");
 		std::cout << input;
-		if(get_tree(input))
+		if(get_tree(input, true))
 			std::cout << "Tree successfully constructed!" << std::endl;
 		print_tree();
 		return;
@@ -138,7 +170,7 @@ void tree::handle_input(std::string& input)
 	if (input == "input2")
 	{
 		delete_tree();
-		if (get_tree(input.append(".txt")))
+		if (get_tree(input.append(".txt"), false))
 			std::cout << "Tree successfully constructed!" << std::endl;
 		print_tree();
 		return;
@@ -154,9 +186,9 @@ void tree::handle_input(std::string& input)
 	if (input == "AVL")
 		check_avl_condition();
 	if (input == "search")
-		search_value();
+		search();
 	if (input == "subtree")
-		search_subtree();
+		search_subtree(root, search_tree);
 	if (input == "quit")
 		run = false;
 }
@@ -174,7 +206,7 @@ bool tree::create_own_tree()
 	}
 	for (int i = 0; i < x.size(); i++)
 	{
-		if (insert_value(x[i]))
+		if (insert_value(x[i], root))
 			std::cout << x[i] << " successfully inserted. " << std::endl;
 		else
 			std::cout <<"Error: "<< x[i] << " already exists" << std::endl;
@@ -239,12 +271,116 @@ void tree::check_avl_condition()
 	return;
 }
 
-void tree::search_value()
+void tree::search() {
+	if (search_tree_size == 1) {
+		search_value(root);
+	}
+	else if(search_tree_size != 0)
+	{
+		search_subtree(root, search_tree);
+	}
+	else {
+		std::cout << "No element in subtree!" << std::endl;
+	}
+	delete_tree(search_tree);
+	search_tree_size = 0;
+	subtree_found = 0;
+	search_nodes.clear();
+}
+
+void tree::search_value(node *head)
 {
+	if (head->m_value == search_tree->m_value) {
+		std::cout << search_tree->m_value << " found ";
+		if (!search_nodes.empty()) {
+			for (auto it = search_nodes.begin(); it != search_nodes.end(); it++) {
+				std::cout << *it;
+				if (search_nodes.end() - 1 != it) {
+					std::cout << ", ";
+				}
+			}
+		}
+		std::cout << std::endl;
+	}
+	else {
+		node* temp = head;
+		search_nodes.push_back(temp->m_value);
+		if (temp->m_value < search_tree->m_value) {
+			if (temp->m_right != nullptr) {
+				search_value(temp->m_right);
+			}
+			else {
+				std::cout << search_tree->m_value << "not found!" << std::endl;
+				return;
+			}
+		}
+		else {
+			if (temp->m_left != nullptr) {
+				search_value(temp->m_left);
+			}
+			else {
+				std::cout << search_tree->m_value << "not found!" << std::endl;
+				return;
+			}
+		}
+	}
 	return;
 }
 
-void tree::search_subtree()
+void tree::search_subtree(node* head, node* search_head)
 {
+	if (head->m_value == search_head->m_value) {
+		subtree_found++;
+		if (search_head->m_left != nullptr) {
+			if (head->m_left != nullptr) {
+				search_subtree(head->m_left, search_head->m_left);
+			}
+			else {
+				std::cout << "Subtree not found!" << std::endl;
+				return;
+			}
+		}
+		if (search_head->m_right != nullptr) {
+			if (head->m_right != nullptr) {
+				search_subtree(head->m_right, search_head->m_right);
+			}
+			else {
+				std::cout << "Subtree not found!" << std::endl;
+				return;
+			}
+		}
+	}
+	else {
+		if (head->m_value < search_head->m_value) {
+			if (head->m_right != nullptr) {
+				search_subtree(head->m_right, search_head);
+			}
+			else {
+				std::cout << "Subtree not found!" << std::endl;
+				return;
+			}
+		}
+		if (head->m_value > search_head->m_value) {
+			if (head->m_left != nullptr) {
+				search_subtree(head->m_left, search_head);
+			}
+			else {
+				std::cout << "Subtree not found!" << std::endl;
+				return;
+			}
+		}
+
+	}
+	if ((head->m_value == root->m_value)&&(subtree_found == search_tree_size)) {
+		std::cout << "Subtree found!" << std::endl;
+	}
 	return;
+}
+
+void tree::add_search() {
+	int val1 = 5;
+	int val2 = 9;
+	search_tree = new node(val1);
+	search_tree->m_right = new node(val2);
+	search_tree_size = 2;
 }

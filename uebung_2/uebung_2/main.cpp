@@ -11,6 +11,7 @@ int main()
 	{
 		x.print_menu();
 		std::cin >> input;
+		x.add_search();
 		x.handle_input(input);
 	}
 	 
