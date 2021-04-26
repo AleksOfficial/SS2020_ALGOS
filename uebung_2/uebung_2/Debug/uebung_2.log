@@ -1,5 +1,9 @@
-﻿  tree.cpp
-C:\Users\Dominik\Documents\FH_Technikum\SS_2021\ALGOS\Uebung_1\SS2020_ALGOS\uebung_2\uebung_2\tree.cpp(6,8): warning C4101: "input_data": Unreferenzierte lokale Variable
-C:\Users\Dominik\Documents\FH_Technikum\SS_2021\ALGOS\Uebung_1\SS2020_ALGOS\uebung_2\uebung_2\tree.cpp(207,20): warning C4018: "<": Konflikt zwischen "signed" und "unsigned"
-C:\Users\Dominik\Documents\FH_Technikum\SS_2021\ALGOS\Uebung_1\SS2020_ALGOS\uebung_2\uebung_2\tree.cpp(94): warning C4715: "tree::insert_value": Nicht alle Codepfade geben einen Wert zurück.
-  uebung_2.vcxproj -> C:\Users\Dominik\Documents\FH_Technikum\SS_2021\ALGOS\Uebung_1\SS2020_ALGOS\uebung_2\Debug\uebung_2.exe
+﻿  main.cpp
+  tree.cpp
+D:\FH_Stuff\SS2020_ALGOS\uebung_2\uebung_2\tree.cpp(6,8): warning C4101: "input_data": Unreferenzierte lokale Variable
+D:\FH_Stuff\SS2020_ALGOS\uebung_2\uebung_2\tree.cpp(246,20): warning C4018: "<": Konflikt zwischen "signed" und "unsigned"
+  Code wird generiert...
+D:\FH_Stuff\SS2020_ALGOS\uebung_2\uebung_2\tree.cpp(107): warning C4715: "tree::insert_value": Nicht alle Codepfade geben einen Wert zurück.
+D:\FH_Stuff\SS2020_ALGOS\uebung_2\uebung_2\tree.cpp(278): warning C4715: "tree::get_max": Nicht alle Codepfade geben einen Wert zurück.
+D:\FH_Stuff\SS2020_ALGOS\uebung_2\uebung_2\tree.cpp(286): warning C4715: "tree::get_min": Nicht alle Codepfade geben einen Wert zurück.
+  uebung_2.vcxproj -> D:\FH_Stuff\SS2020_ALGOS\uebung_2\Debug\uebung_2.exe
