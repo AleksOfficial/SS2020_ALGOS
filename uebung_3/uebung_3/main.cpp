@@ -1,13 +1,15 @@
 #include "graph.h"
 
 
-int main(int argc, char* argv[])
+int main()
 {
 	
 	graph hello;
 	//hello.printGraph();
 	hello.printMenu();
-	hello.handleInput();
+	hello.input();
+	//hello.shortestPath("Baumgasse");
+	//hello.printPath("Ottakringer Strasse/Erdbrustgasse", "Baumgasse");
 	//hello.printGraph();
 
 	
