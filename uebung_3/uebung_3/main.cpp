@@ -5,11 +5,12 @@ int main()
 {
 	
 	graph hello;
+	//graph hello(".\\ADS_Programmieraufgabe3_WienerVerkehrsNetz.txt");
 	//hello.printGraph();
 	hello.printMenu();
 	hello.input();
 	//hello.shortestPath("Baumgasse");
-	//hello.printPath("Ottakringer Strasse/Erdbrustgasse", "Baumgasse");
+	//hello.printPath("Hello-world", "Baumgasse");
 	//hello.printGraph();
 
 	
