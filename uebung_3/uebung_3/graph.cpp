@@ -149,16 +149,72 @@ void graph::shortestPath(std::string src)
 			}
 		}
 	}
-
-	std::cout << "Distance From Source" << std::endl;
-	for (auto i = dist.begin(); i != dist.end(); i++) {
-		std::cout << "station" << i->first << " dist" << i->second << std::endl;
-	}
+	
 }
 
 void graph::printMenu()
 {
+	std::cout << std::endl;
+	std::cout << "### -- Shortest Path -- ###" << std::endl << std::endl;
+	std::cout << "These inputs are possible: " << std::endl;
+	std::cout << "   - input file path\t-> (file)" << std::endl;
+	std::cout << "   - set starting point\t-> (start)" << std::endl;
+	std::cout << "   - set destination\t-> (dest)" << std::endl;
+	std::cout << "   - find shortest Path\t-> (find)" << std::endl;
+	std::cout << "   - terminate program\t-> (exit)" << std::endl;
+}
+
+void graph::handleInput() {
+	std::string command;
+	std::string file = "";
+	std::string src = "";
+	std::string dest = "";
 	
+	while (true)
+	{
+
+		std::cin >> command;
+		if (command == "file") {
+			do {
+				std::cout << std::endl << "Path to file:" << std::endl;
+				std::cin >> file;
+			} while (!this->constructGraph(file));
+
+		}
+		else if (command == "start") {
+			do {
+				std::cout << std::endl << "Starting point:" << std::endl << std::endl;
+				std::cin >> src;
+			} while (this->m_allElements.find(src) == this->m_allElements.end());
+			std::cout << std::endl << "Starting point set!" << std::endl;
+		}
+		else if (command == "dest") {
+			do {
+				std::cout << std::endl << "Destination:" << std::endl << std::endl;
+				std::getline(std::cin, dest);
+			} while (this->m_allElements.find(dest) == this->m_allElements.end());
+			std::cout << std::endl << "Destination set!" << std::endl;
+		}
+		else if (command == "find") {
+			if (src != "" && dest != "") {
+				std::cout << std::endl;
+				this->shortestPath(src);
+				this->printPath(dest, src);
+
+			}
+			else {
+				std::cout << std::endl << "Please set startingpoint and destination first!" << std::endl;
+			}
+		}
+		else if (command == "exit") {
+			break;
+		}
+		else
+		{
+			std::cout << std::endl << "Error! Wrong Command, try again." << std::endl;
+		}
+	}
+
 }
 
 void graph::printPath(std::string dest, std::string src)
@@ -198,9 +254,9 @@ void graph::printPath(std::string dest, std::string src)
 				}
 			}
 
-			std::cout << "From Station: " << it->s_name << " to " << next->s_name << " in " << conn.n_cost << " Minute(s), with line: " << conn.s_line << std::endl;
+			std::cout << "From Station: " << it->s_name << " to " << next->s_name << " in " << conn.n_cost << " Minute(s), with line: " << conn.s_line << std::endl << std::endl;
 			if (conn.s_line != nextConn.s_line) {
-				std::cout << "In Station " << next->s_name << " change from line " << conn.s_line << " to line " << nextConn.s_line << std::endl;
+				std::cout << "In Station " << next->s_name << " change from line " << conn.s_line << " to line " << nextConn.s_line << std::endl << std::endl;
 			}
 		}
 

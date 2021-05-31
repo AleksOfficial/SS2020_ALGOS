@@ -3,13 +3,14 @@
 
 int main(int argc, char* argv[])
 {
-	std::cout << "Hello World!" << std::endl;
-	std::cout << argc << std::endl;
-	graph hello(".\\ADS_Programmieraufgabe3_WienerVerkehrsNetz.txt");
+	
+	graph hello;
+	//hello.printGraph();
+	hello.printMenu();
+	hello.handleInput();
 	//hello.printGraph();
 
-	hello.shortestPath("Karlsplatz");
-	hello.printPath("Donaustadtbruecke", "Karlsplatz");
+	
 
 	return 0;
 }
