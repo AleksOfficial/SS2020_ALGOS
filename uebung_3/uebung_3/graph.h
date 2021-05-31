@@ -5,6 +5,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <vector>
 
 struct connection;
 
@@ -47,8 +48,9 @@ public:
 	graph(std::string filename);
 	graph();
 	void printMenu();
-	void printMetroline();
+	void printPath(std::string dest, std::string src);
 	void printGraph();
+	void shortestPath(std::string src);
 
 
 };
