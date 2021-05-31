@@ -223,44 +223,54 @@ void graph::printPath(std::string dest, std::string src)
 	station current = this->m_allElements[dest];
 	while (current.s_name != src) {
 		path.push_back(current);
+		if (current.p_previousElement == NULL) {
+			break;
+		}
 		current = *current.p_previousElement;
 	}
+	
 	path.push_back(current);
-	for (auto it = path.rbegin(); it != path.rend(); it++) {
-		
-		auto next = it;
-		next++;
-		auto nextForConn = next;
-		connection conn;
-		connection nextConn;
-		if (next != path.rend() /*&& next->s_name != dest*/) {
-			
-			nextForConn++;
-		}
-		
-		
-		if (next != path.rend()) {
-			for (int i = 0; i < next->m_connections.size(); i++) {
-				if (next->s_name != dest) {
-					if (next->m_connections[i].m_destination->s_name == nextForConn->s_name) {
-						nextConn = next->m_connections[i];
+	auto it = path.rbegin();
+	if (it->s_name == src) {
+		for (it; it != path.rend(); it++) {
+
+			auto next = it;
+			next++;
+			auto nextForConn = next;
+			connection conn;
+			connection nextConn;
+			if (next != path.rend() /*&& next->s_name != dest*/) {
+
+				nextForConn++;
+			}
+
+
+			if (next != path.rend()) {
+				for (int i = 0; i < next->m_connections.size(); i++) {
+					if (next->s_name != dest) {
+						if (next->m_connections[i].m_destination->s_name == nextForConn->s_name) {
+							nextConn = next->m_connections[i];
+						}
+
 					}
+				}
 
+				for (int i = 0; i < it->m_connections.size(); i++) {
+					if (it->m_connections[i].m_destination->s_name == next->s_name) {
+						conn = it->m_connections[i];
+					}
+				}
+
+				std::cout << "From Station: " << it->s_name << " to " << next->s_name << " in " << conn.n_cost << " Minute(s), with line: " << conn.s_line << std::endl << std::endl;
+				if (conn.s_line != nextConn.s_line && nextForConn != path.rend()) {
+					std::cout << "In Station " << next->s_name << " change from line " << conn.s_line << " to line " << nextConn.s_line << std::endl << std::endl;
 				}
 			}
 
-			for (int i = 0; i < it->m_connections.size(); i++) {
-				if (it->m_connections[i].m_destination->s_name == next->s_name) {
-					conn = it->m_connections[i];
-				}
-			}
-
-			std::cout << "From Station: " << it->s_name << " to " << next->s_name << " in " << conn.n_cost << " Minute(s), with line: " << conn.s_line << std::endl << std::endl;
-			if (conn.s_line != nextConn.s_line && nextForConn != path.rend()) {
-				std::cout << "In Station " << next->s_name << " change from line " << conn.s_line << " to line " << nextConn.s_line << std::endl << std::endl;
-			}
 		}
-
+		std::cout << "Estimated Time: " << path[0].n_total_cost << " Minute(s)" << std::endl;
 	}
-	std::cout << "Estimated Time: " << path[0].n_total_cost << "Minute(s)" << std::endl;
+	else {
+		std::cout << "No Path!" << std::endl;
+	}
 }
