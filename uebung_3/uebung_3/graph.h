@@ -51,7 +51,7 @@ public:
 	void printPath(std::string dest, std::string src);
 	void printGraph();
 	void shortestPath(std::string src);
-	void handleInput();
+	void input();
 
 
 };

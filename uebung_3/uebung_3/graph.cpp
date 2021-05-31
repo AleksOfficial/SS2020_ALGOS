@@ -164,7 +164,7 @@ void graph::printMenu()
 	std::cout << "   - terminate program\t-> (exit)" << std::endl;
 }
 
-void graph::handleInput() {
+void graph::input() {
 	std::string command;
 	std::string file = "";
 	std::string src = "";
@@ -225,6 +225,7 @@ void graph::printPath(std::string dest, std::string src)
 		path.push_back(current);
 		current = *current.p_previousElement;
 	}
+	path.push_back(current);
 	for (auto it = path.rbegin(); it != path.rend(); it++) {
 		
 		auto next = it;
@@ -232,7 +233,7 @@ void graph::printPath(std::string dest, std::string src)
 		auto nextForConn = next;
 		connection conn;
 		connection nextConn;
-		if (next != path.rend() && next->s_name != dest) {
+		if (next != path.rend() /*&& next->s_name != dest*/) {
 			
 			nextForConn++;
 		}
@@ -255,11 +256,11 @@ void graph::printPath(std::string dest, std::string src)
 			}
 
 			std::cout << "From Station: " << it->s_name << " to " << next->s_name << " in " << conn.n_cost << " Minute(s), with line: " << conn.s_line << std::endl << std::endl;
-			if (conn.s_line != nextConn.s_line) {
+			if (conn.s_line != nextConn.s_line && nextForConn != path.rend()) {
 				std::cout << "In Station " << next->s_name << " change from line " << conn.s_line << " to line " << nextConn.s_line << std::endl << std::endl;
 			}
 		}
 
 	}
-	std::cout << "Estimated Time: " << path[0].n_total_cost << std::endl;
+	std::cout << "Estimated Time: " << path[0].n_total_cost << "Minute(s)" << std::endl;
 }
