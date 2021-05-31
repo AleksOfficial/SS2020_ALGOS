@@ -149,11 +149,7 @@ void graph::shortestPath(std::string src)
 			}
 		}
 	}
-
-	std::cout << "Distance From Source" << std::endl;
-	for (auto i = dist.begin(); i != dist.end(); i++) {
-		std::cout << "station" << i->first << " dist" << i->second << std::endl;
-	}
+	
 }
 
 void graph::printMenu()
