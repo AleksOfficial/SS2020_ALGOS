@@ -116,7 +116,94 @@ void graph::printGraph()
 	}
 }
 
+void graph::shortestPath(std::string src)
+{
+	std::map<std::string, station> heap;
+	std::map<std::string, int> dist;
+
+	for (auto it = this->m_allElements.begin(); it != this->m_allElements.end(); it++) {
+		dist.insert(std::pair<std::string, int>(it->first, std::numeric_limits<int>::max()));
+	}
+
+
+	heap.insert(heap.begin(), std::pair<std::string, station>(src, this->m_allElements[src]));
+	dist[src] = 0;
+
+	while (!heap.empty()) {
+		std::pair<std::string, station> tmp = std::make_pair(heap.begin()->first, heap.begin()->second);
+		heap.erase(heap.begin());
+		station u = tmp.second;
+		for (auto i = u.m_connections.begin(); i != u.m_connections.end(); i++) {
+			station v = *i->m_destination;
+			int cost = i->n_cost;
+
+			if (dist[v.s_name] > (dist[u.s_name] + cost)) {
+				if (dist[v.s_name] != std::numeric_limits<int>::max()) {
+					heap.erase(v.s_name);
+				}
+					dist[v.s_name] = dist[u.s_name] + cost;
+					this->m_allElements[v.s_name].n_total_cost = dist[v.s_name];
+					this->m_allElements[v.s_name].p_previousElement = &this->m_allElements[u.s_name];
+					heap.insert(std::make_pair(v.s_name, v));
+				
+			}
+		}
+	}
+
+	std::cout << "Distance From Source" << std::endl;
+	for (auto i = dist.begin(); i != dist.end(); i++) {
+		std::cout << "station" << i->first << " dist" << i->second << std::endl;
+	}
+}
+
 void graph::printMenu()
 {
 	
+}
+
+void graph::printPath(std::string dest, std::string src)
+{
+	std::vector<station> path;
+	station current = this->m_allElements[dest];
+	while (current.s_name != src) {
+		path.push_back(current);
+		current = *current.p_previousElement;
+	}
+	for (auto it = path.rbegin(); it != path.rend(); it++) {
+		
+		auto next = it;
+		next++;
+		auto nextForConn = next;
+		connection conn;
+		connection nextConn;
+		if (next != path.rend() && next->s_name != dest) {
+			
+			nextForConn++;
+		}
+		
+		
+		if (next != path.rend()) {
+			for (int i = 0; i < next->m_connections.size(); i++) {
+				if (next->s_name != dest) {
+					if (next->m_connections[i].m_destination->s_name == nextForConn->s_name) {
+						nextConn = next->m_connections[i];
+					}
+
+				}
+			}
+
+			for (int i = 0; i < it->m_connections.size(); i++) {
+				if (it->m_connections[i].m_destination->s_name == next->s_name) {
+					conn = it->m_connections[i];
+				}
+			}
+
+			std::cout << "From Station: " << it->s_name << " to " << next->s_name << " in " << conn.n_cost << " Minute(s), with line: " << conn.s_line << std::endl;
+			if (conn.s_line != nextConn.s_line) {
+				std::cout << "In Station " << next->s_name << " change from line " << conn.s_line << " to line " << nextConn.s_line << std::endl;
+			}
+		}
+
+	}
+	std::cout << "Estimated Time: " << path[0].n_total_cost << std::endl;
 }
