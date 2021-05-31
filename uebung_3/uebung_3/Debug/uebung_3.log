@@ -1,0 +1,5 @@
+﻿  graph.cpp
+D:\Google Drive\Algorithmen\uebung_3\uebung_3\graph.cpp(59,27): warning C4244: "=": Konvertierung von "float" in "int", möglicher Datenverlust
+D:\Google Drive\Algorithmen\uebung_3\uebung_3\graph.cpp(4,8): warning C4101: "inputData": Unreferenzierte lokale Variable
+D:\Google Drive\Algorithmen\uebung_3\uebung_3\graph.cpp(108,21): warning C4018: "<": Konflikt zwischen "signed" und "unsigned"
+  uebung_3.vcxproj -> D:\Google Drive\Algorithmen\uebung_3\Debug\uebung_3.exe
