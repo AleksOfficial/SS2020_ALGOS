@@ -7,23 +7,34 @@ bool tree::get_tree(std::string& filename, bool use_root)
 	std::ifstream fin;
 	fin.open(filename);
 	if (!fin)
-		std::cout << "no. wrong path dude";
-	int val;
+	{
+		std::cout << "Error (404): File not Found. ";
+		return false;
+	}
+	std::string val;
 	while (fin >> val)
 	{
-		if (!this->insert_value(val, use_root))
-			std::cout << "There was an error during insertion of value: " << val << "; value already exists" << std::endl;
-		else {
-			std::cout << "Insertion of " << val << " was successful!" << std::endl;
-			if (!use_root) {
-				sub_tree_size++;
+		try {
+				int value = std::stoi(val);
+			if (!this->insert_value(value, use_root))
+				std::cout << "Error(409): " << val << " already exists" << std::endl;
+			else {
+				//std::cout << "Insertion of " << val << " was successful!" << std::endl;
+				if (!use_root) {
+					sub_tree_size++;
+				}
 			}
+		}
+		catch (...)
+		{ 
+			std::cout << "Error(500):" << val << " could not be converted into a number." << std::endl;
+
 		}
 			
 		
 	}
 	fin >> val;
-	return false;
+	return true;
 }
 
 bool tree::insert_value(int& val, bool use_root)
@@ -62,12 +73,13 @@ bool tree::insert_value(int& val, bool use_root)
 				if (traveller->m_right == nullptr)
 				{
 					traveller->m_right = new_element;
+					/*
 					if (use_root) {
 						root = head;
 					}
 					else {
 						sub_tree = head;
-					}
+					}*/
 					return true;
 				}
 				else
@@ -78,12 +90,13 @@ bool tree::insert_value(int& val, bool use_root)
 				if (traveller->m_left == nullptr)
 				{
 					traveller->m_left = new_element;
+					/*
 					if (use_root) {
 						root = head;
 					}
 					else {
 						sub_tree = head;
-					}
+					}*/
 					return true;
 				}
 				else
@@ -96,6 +109,7 @@ bool tree::insert_value(int& val, bool use_root)
 tree::~tree()
 {
 	delete_tree();
+	delete_tree(sub_tree);
 }
 
 void tree::delete_tree(node * node)
@@ -115,6 +129,7 @@ void tree::delete_tree()
 	min = -1;
 	max = -1;
 	avg = -1.0f;
+	total = 0;
 	count = 0;
 }
 
@@ -135,6 +150,11 @@ void tree::print_tree(const std::string& prefix, const node* node, bool is_left)
 	}
 }
 
+void tree::print_tree(node * node)
+{
+	print_tree("", node, false);
+}
+
 void tree::print_tree()
 {
 	print_tree("", root, false);
@@ -144,56 +164,72 @@ void tree::print_menu()
 {
 	std::cout << "### -- Tree Constructer Program -- ###" << std::endl << std::endl;
 	std::cout << "These inputs are possible: " << std::endl;
-	std::cout << "   - create tree 1    -> (input1)" << std::endl;
-	std::cout << "   - create tree 2    -> (input2) " << std::endl;
-	std::cout << "   - create own tree  -> (create)" << std::endl;
-	std::cout << "   - print tree	    -> (print)" << std::endl;
-	std::cout << "   - AVL condition    -> (AVL)" << std::endl;
-	std::cout << "   - search value     -> (search)" << std::endl;
-	std::cout << "   - search subtree   -> (subtree)" << std::endl;
-	std::cout << "   - quit             -> (quit)" << std::endl;
+	std::cout << "   - input file path       -> (path to file)" << std::endl;
+	std::cout << "   - create own tree(cmd)  -> (create)" << std::endl;
+	std::cout << "   - print tree            -> (print)" << std::endl;
+	std::cout << "   - AVL condition         -> (AVL)" << std::endl;
+	std::cout << "   - search value/subtree  -> (search)" << std::endl;
+	std::cout << "   - terminate program     -> (exit)" << std::endl;
 
 }
 
 void tree::handle_input(std::string& input)
 {
-	if (input == "input1")
-	{
-		delete_tree();
-		input.append(".txt");
-		std::cout << input;
-		if(get_tree(input, true))
-			std::cout << "Tree successfully constructed!" << std::endl;
-		print_tree();
-		return;
-	}
-	if (input == "input2")
-	{
-		delete_tree();
-		if (get_tree(input.append(".txt"), false))
-			std::cout << "Tree successfully constructed!" << std::endl;
-		print_tree();
-		return;
-	}
+
 	if (input == "create")
 	{
 		delete_tree();
-		if (create_own_tree())
+		if (create_own_tree(true))
 			print_tree();
+		run = true;
+		
 	}
-	if (input == "print")
+	else if (input == "print")
+	{
 		print_tree();
-	if (input == "AVL")
+		run = true;
+	}
+	else if (input == "AVL")
+	{
 		check_avl_condition();
-	if (input == "search")
+		run = true;
+	}
+	else if (input == "search")
+	{
+		delete_tree(sub_tree);
+		create_own_tree(false);
 		search();
-	if (input == "subtree")
-		search_subtree(root, sub_tree);
-	if (input == "quit")
+		run = true;
+	}
+	else if (input == "help")
+		print_menu();
+	else if (input == "exit")
 		run = false;
+
+	else
+	{
+		delete_tree();
+		if (get_tree(input, true))
+		{
+			print_tree();
+			check_avl_condition();
+
+		}
+		
+
+	}
 }
 
-bool tree::create_own_tree()
+void tree::handle_input(std::string& input1, std::string& input2)
+{
+	if (get_tree(input1, true))
+		if (get_tree(input2, false))
+			search();
+	delete_tree();
+
+}
+
+bool tree::create_own_tree(bool use_root)
 {
 	std::string numbers;
 	std::cout << "Enter your number in the following order: #,#,#,#,..." << std::endl;
@@ -202,17 +238,33 @@ bool tree::create_own_tree()
 	std::vector<int> x;
 	while (std::getline(num, numbers, ','))
 	{
-		x.push_back(std::stoi(numbers));
+		try {
+				x.push_back(std::stoi(numbers));
+			}
+		catch (...) { std::cout << "Error(500): Could not convert " << numbers << " into a number!" << std::endl;  }
 	}
 	for (int i = 0; i < x.size(); i++)
 	{
-		if (insert_value(x[i], root))
-			std::cout << x[i] << " successfully inserted. " << std::endl;
+		if (use_root)
+		{
+			if (insert_value(x[i], true))
+				std::cout << x[i] << " successfully inserted. " << std::endl;
+			else
+				std::cout << "Error(409): " << x[i] << " already exists" << std::endl;
+		}
 		else
-			std::cout <<"Error: "<< x[i] << " already exists" << std::endl;
+		{
+			if (insert_value(x[i], false))
+			{
+				std::cout << x[i] << " successfully inserted. " << std::endl;
+				sub_tree_size++;
+
+			}
+			else
+				std::cout << "Error(409): " << x[i] << " already exists" << std::endl;
+		}
 	}
 	return true;
-
 }
 
 int tree::get_max(node* node)
@@ -235,11 +287,13 @@ int tree::get_min(node* node)
 
 void tree::get_max()
 {
-	
+	max = get_max(root);
+	std::cout << "Maximum: " << max;
 }
 void tree::get_min()
 {
-
+	min = get_min(root);
+	std::cout << "Minimum: " << min;
 }
 
 int tree::height(node* node)
@@ -299,6 +353,10 @@ void tree::check_avl_condition()
 }
 
 void tree::search() {
+	std::cout << "Tree: " <<std::endl;
+	print_tree();
+	std::cout << "Subtree/Searchvalue:" << std::endl;
+	print_tree(sub_tree);
 	if (sub_tree_size == 1) {
 		search_value(root);
 	}
@@ -310,6 +368,7 @@ void tree::search() {
 		std::cout << "No element in subtree!" << std::endl;
 	}
 	delete_tree(sub_tree);
+	sub_tree = nullptr;
 	sub_tree_size = 0;
 	subtree_found = 0;
 	search_nodes.clear();
@@ -404,8 +463,3 @@ void tree::search_subtree(node* head, node* search_head)
 	return;
 }
 
-void tree::add_search() {
-	int val1 = 23;
-	sub_tree = new node(val1);
-	sub_tree_size = 1;
-}

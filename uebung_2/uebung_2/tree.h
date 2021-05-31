@@ -34,7 +34,8 @@ private:
 	bool insert_value(int& val, bool use_root);
 	void print_tree(const std::string& prefix, const node* node, bool is_left);
 	void print_tree();
-	bool create_own_tree();
+	void print_tree(node*node);
+	bool create_own_tree(bool use_root);
 	void check_avl_condition();
 	bool check_avl_condition(node* node);
 	void search();
@@ -45,16 +46,17 @@ private:
 	int get_max(node* node);
 	void get_min();
 	int get_min(node* node);
-
+	
 public:
 	bool run;
-	tree() : root(nullptr), sub_tree(nullptr), avg(-1.0f), max(-1),min(-1),count(0), run(true), avl_tree(false), subtree_found(0), sub_tree_size(0)
+	tree() : root(nullptr), sub_tree(nullptr), sub_tree_size(0), avg(-1.0f), max(-1),min(-1),count(0), run(false), avl_tree(false), subtree_found(0)
 	{}
 	~tree();
 	void print_menu();
 	void handle_input(std::string& input);
+	void handle_input(std::string& input1, std::string& input2);
 
-	void add_search();
+	
 
 
 
