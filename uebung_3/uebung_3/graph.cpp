@@ -183,6 +183,8 @@ void graph::input() {
 		}
 		else if (command == "start") {
 			do {
+				std::cin.clear();
+				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 				std::cout << std::endl << "Starting point:" << std::endl << std::endl;
 				std::getline(std::cin, src);
 			} while (this->m_allElements.find(src) == this->m_allElements.end());
@@ -190,6 +192,8 @@ void graph::input() {
 		}
 		else if (command == "dest") {
 			do {
+				std::cin.clear();
+				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 				std::cout << std::endl << "Destination:" << std::endl << std::endl;
 				std::getline(std::cin, dest);
 			} while (this->m_allElements.find(dest) == this->m_allElements.end());
