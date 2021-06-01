@@ -184,7 +184,7 @@ void graph::input() {
 		else if (command == "start") {
 			do {
 				std::cout << std::endl << "Starting point:" << std::endl << std::endl;
-				std::cin >> src;
+				std::getline(std::cin, src);
 			} while (this->m_allElements.find(src) == this->m_allElements.end());
 			std::cout << std::endl << "Starting point set!" << std::endl;
 		}
